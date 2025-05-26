@@ -10,17 +10,8 @@ Ten projekt to symulator urządzenia, które generuje pomiary temperatury, wilgo
 ## 📦 Instalacja
 
 1. Sklonuj repozytorium lub pobierz pliki projektu.
-2. (Opcjonalnie) Utwórz i aktywuj środowisko wirtualne:
 
-```bash
-python -m venv venv
-.\venv\Scripts\activate  # Windows
-source venv/bin/activate  # Linux/macOS
-```
-
-````
-
-3. Zainstaluj wymagane pakiety:
+2. Zainstaluj wymagane pakiety:
 
 ```bash
 pip install -r requirements.txt
@@ -66,7 +57,7 @@ sensor_simulator/
 ├── simulator.py       # Główna aplikacja
 ├── sensors.py         # Symulowane czujniki
 ├── output.py          # Wysyłanie danych do API
-├── server.py          # Testowy serwer API (Flask)
+├── server.py          # Testowy serwer AP (Flask)
 ├── requirements.txt   # Lista pakietów
 └── README.md          # Dokumentacja
 ```
@@ -86,8 +77,6 @@ sensor_simulator/
 ## 📌 Autor
 
 Projekt testowy do celów edukacyjnych – symulacja IoT z Pythonem.
-
-````
 
 ---
 
