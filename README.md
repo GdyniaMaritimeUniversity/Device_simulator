@@ -1,39 +1,39 @@
-# Symulator Urządzenia Pomiarowego (Python)
+# Measurement Device Simulator (Python)
 
-Ten projekt to symulator urządzenia, które generuje pomiary temperatury, wilgotności, ciśnienia oraz poziomu światła, a następnie wysyła dane do zdefiniowanego API w formacie JSON.
+This project is a simulator of a device that generates measurements of temperature, humidity, pressure, and light level, then sends the data to a specified API in JSON format.
 
-## 🔧 Wymagania
+## 🔧 Requirements
 
 - Python 3.8+
 - `pip` (Python package manager)
 
-## 📦 Instalacja
+## 📦 Installation
 
-1. Sklonuj repozytorium lub pobierz pliki projektu.
+1. Clone the repository or download the project files.
 
-2. Zainstaluj wymagane pakiety:
-
+2. Install required packages:
+3. 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 🚀 Uruchomienie symulatora
+## 🚀 Running the Simulator
 
 ```bash
 python simulator.py
 ```
 
-Podczas uruchamiania podaj adres API (np. `http://localhost:5000/api/data`) i interwał (w sekundach), co ile mają być generowane i wysyłane dane.
+When launching, provide the API endpoint (e.g., http://localhost:5000/api/data) and the interval (in seconds) for how often the measurements should be generated and sent.
 
-## 🧪 Opcjonalny serwer API do testów
+## 🧪 Optional Test API Server
 
-Możesz uruchomić prosty serwer Flask do odbioru danych:
+You can run a simple Flask server to receive the data:
 
 ```bash
 python server.py
 ```
 
-Plik `server.py` powinien zawierać:
+Your server.py file should contain:
 
 ```python
 from flask import Flask, request, jsonify
@@ -43,26 +43,26 @@ app = Flask(__name__)
 @app.route('/api/data', methods=['POST'])
 def receive_data():
     data = request.json
-    print("Odebrano dane:", data)
+    print("Data received:", data)
     return jsonify({"status": "ok"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
 ```
 
-## 📁 Struktura projektu
+## 📁 Project Structure
 
 ```
-sensor_simulator/
-├── simulator.py       # Główna aplikacja
-├── sensors.py         # Symulowane czujniki
-├── output.py          # Wysyłanie danych do API
-├── server.py          # Testowy serwer AP (Flask)
-├── requirements.txt   # Lista pakietów
-└── README.md          # Dokumentacja
+Device_simulator/
+├── simulator.py       # Main simulator application
+├── sensors.py         # Simulated sensors
+├── output.py          # Sending data to API
+├── server.py          # Test API server (Flask)
+├── requirements.txt   # Package list
+└── README.md          # Documentation
 ```
 
-## ✅ Przykładowe dane wysyłane do API
+## ✅ Sample JSON Data Sent to the API
 
 ```json
 {
@@ -74,9 +74,9 @@ sensor_simulator/
 }
 ```
 
-## 📌 Autor
+## 📌 Author
 
-Projekt testowy do celów edukacyjnych – symulacja IoT z Pythonem.
+Test project for educational purposes – IoT simulation using Python.
 
 ---
 
