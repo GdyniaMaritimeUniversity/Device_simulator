@@ -53,7 +53,7 @@ if __name__ == "__main__":
 ## 📁 Struktura projektu
 
 ```
-sensor_simulator/
+Device_simulator/
 ├── simulator.py       # Główna aplikacja
 ├── sensors.py         # Symulowane czujniki
 ├── output.py          # Wysyłanie danych do API
