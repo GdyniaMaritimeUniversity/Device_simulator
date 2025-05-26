@@ -13,18 +13,18 @@ def generate_measurement():
     }
 
 def main():
-    api_url = input("Podaj URL API (np. http://localhost:5000/api/data): ").strip()
-    interval = float(input("Podaj interwał (sekundy): "))
-    print("Start symulacji z wysyłką do API...\n(Ctrl+C aby zakończyć)\n")
+    api_url = input("Enter API URL (e.g., http://localhost:5000/api/data): ").strip()
+    interval = float(input("Enter interval (seconds): "))
+    print("Starting simulation with data being sent to API...\n(Press Ctrl+C to stop)\n")
 
     try:
         while True:
             data = generate_measurement()
-            print("Dane:", data)
+            print("Data:", data)
             output.send_to_api(data, api_url)
             time.sleep(interval)
     except KeyboardInterrupt:
-        print("\nSymulacja zakończona.")
+        print("\nSimulation stopped.")
 
 if __name__ == "__main__":
     main()
