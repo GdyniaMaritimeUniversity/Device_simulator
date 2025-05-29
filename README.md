@@ -1,6 +1,6 @@
 # Measurement Device Simulator (Python)
 
-This project is a simulator of a device that generates measurements of temperature, humidity, pressure, and light level, then sends the data to a specified API in JSON format.
+A sensor device simulator for testing a backend API. Supports data generation, measurement sending, alerting, and concurrent simulation of multiple devices.
 
 ## 🔧 Requirements
 
@@ -23,7 +23,11 @@ pip install -r requirements.txt
 python simulator.py
 ```
 
-When launching, provide the API endpoint (e.g., http://localhost:5000/api/data) and the interval (in seconds) for how often the measurements should be generated and sent.
+You'll be asked for:
+
+- 🔗 **API base URL**, e.g.: `http://localhost:5000/api`
+- ⏱️ **Measurement interval** in seconds
+- 🔁 **Number of devices** to simulate concurrently
 
 ## 🧪 Optional Test API Server
 
@@ -58,21 +62,63 @@ Device_simulator/
 ├── sensors.py         # Simulated sensors
 ├── output.py          # Sending data to API
 ├── server.py          # Test API server (Flask)
+├── uuid_resolver.py   # Retrieves UUID using MAC address
 ├── requirements.txt   # Package list
 └── README.md          # Documentation
 ```
 
-## ✅ Sample JSON Data Sent to the API
+## 📡 Backend API – Required Endpoints
+
+Your backend should expose:
+
+### GET `/uuid?mac={mac}`
+
+Returns the UUID assigned to a device's MAC address.
+
+**Response:**
 
 ```json
 {
-  "timestamp": "2025-05-26T15:22:05.123456",
-  "temperature": 23.5,
-  "humidity": 45.2,
-  "pressure": 1012.3,
-  "light": 567.8
+  "uuid": "a1b2c3d4-e5f6-7890-abcd-1234567890ef"
 }
 ```
+
+---
+
+### POST `/data`
+
+Receives sensor measurements.
+
+**Example payload:**
+
+```json
+{
+  "timestamp": "2025-05-29T12:00:00+00:00",
+  "device_uuid": "a1b2c3d4-e5f6-7890-abcd-1234567890ef",
+  "temperature": 25.3,
+  "humidity": 45.7,
+  "pressure": 1012.5
+}
+```
+
+---
+
+### POST `/alerts`
+
+Sends alerts, e.g., for high temperature.
+
+**Example:**
+
+```json
+{
+  "timestamp": "2025-05-29T12:00:00+00:00",
+  "device_uuid": "a1b2c3d4-e5f6-7890-abcd-1234567890ef",
+  "type": "high_temperature",
+  "value": 30.2
+}
+```
+
+---
 
 ## 📌 Author
 
