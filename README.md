@@ -12,7 +12,7 @@ This project is a simulator of a device that generates measurements of temperatu
 1. Clone the repository or download the project files.
 
 2. Install required packages:
-3. 
+
 ```bash
 pip install -r requirements.txt
 ```

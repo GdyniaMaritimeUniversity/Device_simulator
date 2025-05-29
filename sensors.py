@@ -9,5 +9,4 @@ def read_humidity():
 def read_pressure():
     return round(random.uniform(980, 1050), 2)
 
-def read_light_level():
-    return round(random.uniform(100, 1000), 2)
+

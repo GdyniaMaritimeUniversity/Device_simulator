@@ -8,8 +8,7 @@ def generate_measurement():
         "timestamp": datetime.now().isoformat(),
         "temperature": sensors.read_temperature(),
         "humidity": sensors.read_humidity(),
-        "pressure": sensors.read_pressure(),
-        "light": sensors.read_light_level()
+        "pressure": sensors.read_pressure()
     }
 
 def main():
