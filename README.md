@@ -1,6 +1,6 @@
 # Measurement Device Simulator (Python)
 
-A sensor device simulator for testing a backend API. Supports data generation, measurement sending, alerting, and concurrent simulation of multiple devices.
+This project is a simulator of a devices that generates measurements of temperature, humidity, pressure, and light level, then sends the data to a specified API in JSON format.
 
 ## 🔧 Requirements
 
@@ -23,11 +23,13 @@ pip install -r requirements.txt
 python simulator.py
 ```
 
-You'll be asked for:
+You will be prompted to:
 
-- 🔗 **API base URL**, e.g.: `http://localhost:5000/api`
-- ⏱️ **Measurement interval** in seconds
-- 🔁 **Number of devices** to simulate concurrently
+Enter the API endpoint URL (e.g., http://localhost:5000/api/data),
+Enter the interval in seconds between measurements,
+Enter the number of devices to simulate.
+
+Each simulated device sends its own data periodically, including a unique MAC address. Occasionally, extreme values will be generated to simulate alerts.
 
 ## 🧪 Optional Test API Server
 
@@ -62,63 +64,41 @@ Device_simulator/
 ├── sensors.py         # Simulated sensors
 ├── output.py          # Sending data to API
 ├── server.py          # Test API server (Flask)
-├── uuid_resolver.py   # Retrieves UUID using MAC address
 ├── requirements.txt   # Package list
 └── README.md          # Documentation
 ```
 
-## 📡 Backend API – Required Endpoints
-
-Your backend should expose:
-
-### GET `/uuid?mac={mac}`
-
-Returns the UUID assigned to a device's MAC address.
-
-**Response:**
+## ✅ Sample JSON Data Sent to the API
 
 ```json
 {
-  "uuid": "a1b2c3d4-e5f6-7890-abcd-1234567890ef"
+  "timestamp": "2025-06-02T16:03:11.012345",
+  "temperature": 52.8,
+  "humidity": 93.5,
+  "pressure": 1055.4,
+  "mac_address": "00:16:3e:00:00:05",
+  "alerts": [
+    {
+      "alert_name": "High Temperature",
+      "description": "Temperature exceeded 50°C: 52.8°C"
+    },
+    {
+      "alert_name": "High Humidity",
+      "description": "Humidity exceeded 90%: 93.5%"
+    },
+    {
+      "alert_name": "High Pressure",
+      "description": "Pressure exceeded 1050 hPa: 1055.4 hPa"
+    }
+  ]
 }
 ```
 
----
-
-### POST `/data`
-
-Receives sensor measurements.
-
-**Example payload:**
+If no alerts are triggered, alerts will be an empty array:
 
 ```json
-{
-  "timestamp": "2025-05-29T12:00:00+00:00",
-  "device_uuid": "a1b2c3d4-e5f6-7890-abcd-1234567890ef",
-  "temperature": 25.3,
-  "humidity": 45.7,
-  "pressure": 1012.5
-}
+  "alerts": []
 ```
-
----
-
-### POST `/alerts`
-
-Sends alerts, e.g., for high temperature.
-
-**Example:**
-
-```json
-{
-  "timestamp": "2025-05-29T12:00:00+00:00",
-  "device_uuid": "a1b2c3d4-e5f6-7890-abcd-1234567890ef",
-  "type": "high_temperature",
-  "value": 30.2
-}
-```
-
----
 
 ## 📌 Author
 

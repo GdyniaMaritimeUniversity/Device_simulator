@@ -1,49 +1,77 @@
 import time
+import threading
 from datetime import datetime
 import sensors
 import output
-from concurrent.futures import ThreadPoolExecutor
-from uuid_resolver import fetch_uuid
 
-def generate_measurement(device_uuid):
-    return {
+def generate_mac_address(index):
+    base_mac = [0x00, 0x16, 0x3e,
+                (index >> 16) & 0xff,
+                (index >> 8) & 0xff,
+                index & 0xff]
+    return ':'.join(map(lambda x: f"{x:02x}", base_mac))
+
+def check_alerts(data):
+    alerts = []
+
+    if data["temperature"] > 50:
+        alerts.append({
+            "alert_name": "High Temperature",
+            "description": f"Temperature exceeded 50°C: {data['temperature']}°C"
+        })
+
+    if data["humidity"] > 90:
+        alerts.append({
+            "alert_name": "High Humidity",
+            "description": f"Humidity exceeded 90%: {data['humidity']}%"
+        })
+
+    if data["pressure"] > 1050:
+        alerts.append({
+            "alert_name": "High Pressure",
+            "description": f"Pressure exceeded 1050 hPa: {data['pressure']} hPa"
+        })
+
+    return alerts
+
+
+def generate_measurement(mac_address):
+    data = {
         "timestamp": datetime.now().isoformat(),
-        "device_uuid": device_uuid,
         "temperature": sensors.read_temperature(),
         "humidity": sensors.read_humidity(),
-        "pressure": sensors.read_pressure()
+        "pressure": sensors.read_pressure(),
+        "mac_address": mac_address
     }
+    data["alerts"] = check_alerts(data)
+    return data
 
-def device_simulation(api_url, alert_url, interval):
-    uuid = fetch_uuid(api_url)
-    if not uuid:
-        print("❌ UUID not found, stopping device.")
-        return
 
-    try:
-        while True:
-            data = generate_measurement(uuid)
-            print("Data:", data)
-            output.send_to_api(data, api_url + "/data")
-
-            if data["temperature"] > 28.0:
-                output.send_alert("high_temperature", data["temperature"], uuid, alert_url)
-
-            time.sleep(interval)
-    except KeyboardInterrupt:
-        print("\nDevice simulation stopped.")
+def simulate_device(device_id, api_url, interval):
+    mac_address = generate_mac_address(device_id)
+    while True:
+        data = generate_measurement(mac_address)
+        print(f"[{mac_address}] Data: {data}")
+        output.send_to_api(data, api_url)
+        time.sleep(interval)
 
 def main():
-    api_url = input("Enter base API URL (e.g., http://localhost:5000/api): ").strip()
-    alert_url = api_url + "/alerts"
+    api_url = input("Enter API URL (e.g., http://localhost:5000/api/data): ").strip()
     interval = float(input("Enter interval (seconds): "))
-    device_count = int(input("How many devices to simulate in parallel? "))
+    num_devices = int(input("Enter number of devices to simulate: "))
+    print(f"\nStarting simulation with {num_devices} device(s)...\n(Press Ctrl+C to stop)\n")
 
-    print(f"Starting simulation for {device_count} device(s)...\n")
+    threads = []
+    try:
+        for i in range(num_devices):
+            t = threading.Thread(target=simulate_device, args=(i, api_url, interval), daemon=True)
+            threads.append(t)
+            t.start()
 
-    with ThreadPoolExecutor(max_workers=device_count) as executor:
-        for _ in range(device_count):
-            executor.submit(device_simulation, api_url, alert_url, interval)
+        while True:
+            time.sleep(1) 
+    except KeyboardInterrupt:
+        print("\nSimulation stopped.")
 
 if __name__ == "__main__":
     main()
